@@ -1,0 +1,3 @@
+Poppins, Roboto, and Roboto Mono are bundled unchanged from Google Fonts.
+All three families are licensed under SIL Open Font License 1.1.
+See LICENSE-*.txt for copyright and license terms, and sources.json for source URLs and language coverage.

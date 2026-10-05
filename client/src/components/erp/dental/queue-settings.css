@@ -1,0 +1,106 @@
+.queue-settings-dialog[data-slot="dialog-content"] { width: min(1440px, calc(100vw - 32px)); max-width: none; height: min(900px, calc(100dvh - 32px)); max-height: calc(100dvh - 32px); border-radius: 14px; overflow: hidden; background: hsl(var(--background)); }
+.queue-settings-dialog > div:first-child { padding: 0; }
+.queue-settings-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 24px; flex-shrink: 0; }
+.queue-settings-heading { display: flex; gap: 16px; min-width: 0; align-items: center; }
+.queue-settings-heading-icon { width: 50px; height: 50px; flex-shrink: 0; display: grid; place-items: center; border: 1px solid hsl(var(--border)); border-radius: 9px; background: hsl(var(--muted) / .25); }
+.queue-settings-heading-icon svg { width: 28px; height: 28px; }
+.queue-settings-heading h2 { font-size: 1.125rem; font-weight: 600; line-height: 1.5; }
+.queue-settings-heading p { margin-top: 3px; font-size: .75rem; }
+.queue-settings-header-actions { display: flex; gap: 24px; align-items: center; flex-shrink: 0; }
+.queue-settings-save-state { display: flex; align-items: center; gap: 8px; font-size: 13px; color: hsl(var(--muted-foreground)); }
+.queue-settings-save-state svg { width: 20px; height: 20px; }
+.queue-settings-save-state.is-saved svg { color: #16c84d; }
+.queue-settings-tabs { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.queue-settings-tab-strip { flex-shrink: 0; padding: 0 24px 16px; border-bottom: 1px solid hsl(var(--border)); }
+.queue-settings-tab-error { color: hsl(var(--destructive)); font-weight: 700; margin-left: 6px; }
+.queue-settings-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); min-height: 0; flex: 1; }
+.queue-settings-fields, .queue-settings-preview { padding: 22px 28px; min-width: 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.queue-settings-fields { border-right: 1px solid hsl(var(--border)); }
+.queue-settings-fieldset { min-width: 0; }
+.queue-settings-fieldset > [role=tabpanel] { margin: 0; }
+.queue-settings-fieldset > [role=tabpanel][data-state=inactive] { display: none; }
+.queue-settings-fieldset > [role=tabpanel][data-state=active] { display: flex; flex-direction: column; gap: 20px; }
+.queue-settings-section-title h3, .queue-settings-preview-heading h3 { font-size: 1rem; line-height: 1.5; font-weight: 600; }
+.queue-settings-section-title p, .queue-settings-preview-heading p { font-size: .75rem; color: hsl(var(--muted-foreground)); margin-top: 3px; }
+.queue-settings-help { color: hsl(var(--muted-foreground)); font-size: .75rem; line-height: 1.5; margin-top: 5px; }
+.queue-settings-logo-group { display: flex; flex-direction: column; gap: 16px; }
+.queue-settings-logo-upload { display: flex; align-items: center; gap: 18px; }
+.queue-settings-logo-upload > div:last-child { min-width: 0; }
+.queue-settings-logo-upload #queue-logo-thumbnail { width: 96px; height: 88px; border: 1px solid hsl(var(--border)); border-radius: 10px; padding: 8px; flex-shrink: 0; display: grid; place-items: center; overflow: hidden; }
+#queue-logo-thumbnail img { width: 100%; height: 100%; object-fit: contain; }
+#queue-logo-thumbnail > svg { width: 32px; height: 32px; color: hsl(var(--muted-foreground)); }
+.queue-settings-logo-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.queue-settings-logo-actions button { height: 34px; font-size: 13px; }
+.queue-settings-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.queue-settings-background { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.queue-settings-background-upload { display: flex; align-items: center; gap: 16px; }
+.queue-settings-background-upload > div:last-child { min-width: 0; }
+.queue-settings-background-thumbnail { width: 112px; aspect-ratio: 16 / 9; flex-shrink: 0; display: grid; place-items: center; border: 1px solid hsl(var(--border)); border-radius: 8px; overflow: hidden; background: hsl(var(--muted)); }
+.queue-settings-background-thumbnail img { width: 100%; height: 100%; object-fit: contain; }
+.queue-settings-background-thumbnail svg { width: 28px; height: 28px; color: hsl(var(--muted-foreground)); }
+.queue-settings-field input:not([type=color]), .queue-settings-fields [role=combobox] { height: 40px; background: hsl(var(--background) / .5); }
+.queue-settings-field input[readonly] { color: hsl(var(--muted-foreground)); }
+.queue-settings-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.queue-settings-logo-colors { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: end; }
+.queue-settings-color { display: flex; gap: 10px; align-items: center; min-height: 40px; padding: 5px 10px; border: 1px solid hsl(var(--border)); border-radius: 6px; background: hsl(var(--background) / .5); }
+.queue-settings-color input[type=color] { height: 26px; width: 26px; padding: 0; border: 0; flex-shrink: 0; border-radius: 4px; cursor: pointer; }
+.queue-settings-color input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+.queue-settings-color input[type=color]::-webkit-color-swatch { border: 0; border-radius: 4px; }
+.queue-settings-color span { font-size: 12px; overflow-wrap: anywhere; }
+.queue-settings-switch { display: flex; gap: 12px; align-items: center; min-height: 40px; }
+.queue-settings-switch label { line-height: 1.4; }
+.queue-settings-switch-block .queue-settings-help { margin-left: 60px; }
+.queue-settings-counter { font-size: 12px; color: hsl(var(--muted-foreground)); text-align: right; }
+.queue-settings-divider { border-top: 1px solid hsl(var(--border)); margin: 2px 0; }
+.queue-settings-error { color: hsl(var(--destructive)); font-size: 13px; line-height: 1.5; }
+.queue-settings-preview { background: hsl(var(--muted) / .12); }
+.queue-settings-preview-heading { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 18px; }
+.queue-settings-preview-heading h3 { display: flex; align-items: center; gap: 12px; }
+.queue-settings-preview-heading h3 span { width: 10px; height: 10px; border-radius: 50%; background: #16c84d; }
+.queue-settings-ratio { border: 1px solid hsl(var(--muted-foreground) / .5); border-radius: 6px; padding: 4px 14px; font-size: 12px; }
+.queue-settings-tv-frame { background: #050707; border: 1px solid #75818b80; border-radius: 8px; padding: 9px; box-shadow: inset 0 0 0 2px #000, 0 4px 10px #0002; }
+.queue-settings-tv-frame .dental-tv-preview { border-radius: 2px; }
+.queue-settings-tv-stand { width: 38%; height: 24px; margin: 0 auto 12px; position: relative; }
+.queue-settings-tv-stand::before { content: ''; position: absolute; width: 22%; height: 18px; left: 39%; top: 0; background: linear-gradient(90deg,#24282c,#444a51,#252a30); border-inline: 1px solid #64707c; }
+.queue-settings-tv-stand::after { content: ''; position: absolute; width: 100%; height: 6px; bottom: 0; left: 0; border-radius: 12px 12px 2px 2px; background: linear-gradient(#727b86,#20252b); box-shadow: 0 2px 2px #0003; }
+.queue-settings-preview-caption { display: flex; gap: 14px; align-items: flex-start; font-size: 13px; }
+.queue-settings-preview-caption > svg { flex-shrink: 0; width: 20px; height: 20px; margin-top: 2px; color: hsl(var(--muted-foreground)); }
+.queue-settings-preview-caption strong { font-weight: 500; }
+.queue-settings-preview-caption p { font-size: 11px; color: hsl(var(--muted-foreground)); margin-top: 3px; }
+.queue-settings-preview-caption > button { margin-left: auto; font-size: 12px; padding: 0; height: 28px; white-space: nowrap; }
+.queue-settings-tip { display: flex; gap: 16px; padding: 18px; background: hsl(var(--muted) / .55); border: 1px solid hsl(var(--border)); border-radius: 8px; margin-top: 18px; font-size: 13px; }
+.queue-settings-tip > svg { color: hsl(var(--muted-foreground)); width: 24px; height: 24px; flex-shrink: 0; }
+.queue-settings-tip strong { font-weight: 600; }
+.queue-settings-tip p { color: hsl(var(--muted-foreground)); margin-top: 5px; line-height: 1.5; }
+.queue-settings-footer { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 28px; border-top: 1px solid hsl(var(--border)); }
+.queue-settings-footer > p { font-size: 13px; color: hsl(var(--muted-foreground)); }
+.queue-settings-footer > div { display: flex; gap: 12px; }
+.queue-settings-footer button { min-width: 108px; }
+.queue-settings-expanded { width: min(1600px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); }
+.queue-settings-expanded-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.queue-settings-expanded-screen { width: min(100%, calc((100dvh - 150px) * 16 / 9)); margin: 0 auto 12px; }
+@media (max-width: 1023px) {
+  .queue-settings-dialog[data-slot="dialog-content"] { width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; border: 0; }
+  .queue-settings-header { padding: 16px; }
+  .queue-settings-heading { gap: 10px; }
+  .queue-settings-heading-icon { width: 40px; height: 40px; }
+  .queue-settings-header-actions { gap: 8px; }
+  .queue-settings-save-state { font-size: 11px; }
+  .queue-settings-tab-strip { padding: 0 16px 16px; }
+  .queue-settings-body { display: block; overflow-y: auto; overscroll-behavior: contain; }
+  .queue-settings-fields, .queue-settings-preview { overflow: visible; padding: 22px 20px; border-right: 0; }
+  .queue-settings-preview { border-top: 1px solid hsl(var(--border)); }
+  .queue-settings-footer { padding: 12px 16px; }
+}
+@media (max-width: 520px) {
+  .queue-settings-heading-icon { display: none; }
+  .queue-settings-header-actions { gap: 4px; }
+  .queue-settings-save-state { max-width: 82px; gap: 4px; }
+  .queue-settings-save-state svg { flex-shrink: 0; width: 16px; }
+  .queue-settings-logo-colors, .queue-settings-pair { grid-template-columns: 1fr; gap: 12px; }
+  .queue-settings-logo-upload { align-items: flex-start; gap: 12px; }
+  .queue-settings-preview-caption { flex-wrap: wrap; }
+  .queue-settings-footer { flex-wrap: wrap; }
+  .queue-settings-footer > p { width: 100%; }
+  .queue-settings-footer > div { width: 100%; justify-content: flex-end; }
+}

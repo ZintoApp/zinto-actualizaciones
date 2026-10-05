@@ -1,0 +1,57 @@
+.queue-reception { --queue-primary: var(--brand-primary-color, hsl(var(--primary))); --queue-indicator: color-mix(in srgb, var(--queue-primary) 75%, hsl(var(--foreground))); }
+.queue-reception h2 { font-size: 1.2rem; font-weight: 650; letter-spacing: -.02em; }
+.queue-overview, .queue-patient-panel, .queue-station { border: 1px solid hsl(var(--border)); background: hsl(var(--card)); border-radius: 12px; }
+.queue-overview { display: grid; grid-template-columns: 190px repeat(4,minmax(0,1fr)); align-items: center; padding: 20px; margin-bottom: 14px; }
+.queue-overview h2 { font-size: 1rem; }
+.queue-overview button { min-width: 0; text-align: left; border-left: 1px solid hsl(var(--border)); padding: 0 20%; border-radius: 0; }
+.queue-overview button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 4px; }
+.queue-overview button[aria-pressed=true] { color: var(--queue-primary); }
+.queue-overview button > span { display: flex; align-items: center; gap: 10px; color: hsl(var(--muted-foreground)); font-size: .85rem; white-space: nowrap; }
+.queue-overview strong { display: block; margin: 4px 0 0 19px; font-size: 1.65rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.queue-status-dot { display: inline-block; width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: hsl(var(--muted-foreground)); }
+.queue-dot-waiting { background: var(--queue-indicator, color-mix(in srgb, var(--brand-primary-color, hsl(var(--primary))) 75%, hsl(var(--foreground)))); }
+.queue-dot-called { background: #70a8bd; }
+.queue-reception-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(320px, 3fr); gap: 14px; align-items: stretch; }
+.queue-patient-panel { min-width: 0; padding: 18px 18px 0; }
+.queue-table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.queue-table-toolbar > div:last-child { max-width: 365px; }
+.queue-count, .queue-tabs button span { display: inline-block; border-radius: 999px; background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); padding: 2px 10px; font-size: .8rem; white-space: nowrap; }
+.queue-tabs { display: flex; gap: 12px; border-bottom: 1px solid hsl(var(--border)); overflow-x: auto; }
+.queue-tabs button { padding: 9px 10px 11px; color: hsl(var(--muted-foreground)); font-size: .85rem; white-space: nowrap; border-bottom: 3px solid transparent; }
+.queue-tabs button[aria-pressed=true] { border-bottom-color: var(--queue-indicator); color: hsl(var(--foreground)); font-weight: 600; }
+.queue-tabs button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -3px; }
+.queue-tabs button span { padding: 0 7px; margin-left: 8px; }
+.queue-filters { padding: 14px 0 10px; }
+.queue-filter-row { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.queue-more-filters { margin-top: 8px; font-size: .75rem; color: hsl(var(--muted-foreground)); }
+.queue-more-filters summary { cursor: pointer; width: fit-content; }
+.queue-reception-table { width: 100%; min-width: 740px; font-size: .85rem; border-top: 1px solid hsl(var(--border)); }
+.queue-reception-table th { height: 40px; padding: 0 10px; font-size: .8rem; }
+.queue-reception-table td { padding: 12px 10px; vertical-align: middle; }
+.queue-reception-table td:nth-child(1) { width: 19%; }
+.queue-reception-table td:nth-child(2) { width: 21%; }
+.queue-reception-table td:nth-child(3) { width: 18%; }
+.queue-reception-table td:nth-child(4) { width: 20%; }
+.queue-reception-table td:nth-child(5) { white-space: nowrap; }
+.queue-cell-secondary { font-size: .75rem; color: hsl(var(--muted-foreground)); margin-top: 3px; }
+.queue-old-label { display: flex; align-items: center; gap: 5px; color: #b86c00; font-size: .75rem; margin-top: 3px; }
+.dark .queue-old-label { color: #f5a623; }
+.queue-status { display: inline-flex; align-items: center; gap: 6px; border: 1px solid hsl(var(--border)); padding: 5px 8px; border-radius: 7px; color: hsl(var(--muted-foreground)); font-size: .72rem; line-height: 1.2; }
+.queue-status-waiting { border-color: hsl(var(--muted-foreground) / .6); }
+.queue-status-cancelled, .queue-status-finished { background: hsl(var(--muted)); }
+.queue-next-row { background: color-mix(in srgb,var(--queue-indicator) 9%, transparent); box-shadow: inset 3px 0 var(--queue-indicator); }
+.queue-table-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid hsl(var(--border)); padding: 12px 0 8px; font-size: .75rem; color: hsl(var(--muted-foreground)); }
+.queue-page-number { display: grid; place-items: center; height: 32px; min-width: 32px; border: 1px solid hsl(var(--border)); border-radius: 6px; color: hsl(var(--foreground)); background: hsl(var(--muted)); }
+.queue-timezone { display: flex; align-items: center; gap: 7px; padding: 8px 0; border-top: 1px solid hsl(var(--border)); font-size: .75rem; color: hsl(var(--muted-foreground)); }
+.queue-station { min-width: 0; padding: 18px; }
+.queue-station-selects { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 22px 0; }
+.queue-station-selects label { font-size: .8rem; font-weight: 400; }
+.queue-station-next { border-top: 1px solid hsl(var(--border)); padding-top: 18px; }
+.queue-station-next h3 { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: hsl(var(--muted-foreground)); margin-bottom: 10px; }
+.queue-next-card { border: 1px solid hsl(var(--border)); border-radius: 7px; background: hsl(var(--background) / .4); padding: 18px; }
+.queue-next-card strong { font-size: 1.6rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.queue-station-empty { min-height: 128px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; color: hsl(var(--muted-foreground)); font-size: .85rem; }
+.queue-previous-warning { border: 1px solid #b88020; border-radius: 7px; padding: 18px; margin-top: 24px; background: #e9a02008; color: #a66500; }
+.dark .queue-previous-warning { color: #f5a623; }
+@media (max-width: 1199px) { .queue-reception-grid { grid-template-columns: minmax(0,1fr); } .queue-overview { grid-template-columns: 155px repeat(4,minmax(0,1fr)); } .queue-overview button { padding: 0 15%; } }
+@media (max-width: 639px) { .queue-overview { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px 0; padding: 16px; } .queue-overview h2 { grid-column: 1 / -1; } .queue-overview button { padding: 0 12px; } .queue-table-toolbar { align-items: stretch; flex-direction: column; } .queue-table-toolbar > div:last-child { max-width: none; } .queue-filter-row { grid-template-columns: minmax(0,1fr); } .queue-patient-panel,.queue-station { padding: 14px; } .queue-station-selects { grid-template-columns: minmax(0,1fr); } .queue-tabs { gap: 0; } }

@@ -1,0 +1,221 @@
+/* Custom scrollbar styles for EmailList component */
+
+/* Base container styles */
+.email-list-container {
+  /* Ensure proper height and overflow */
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.email-list-container::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.email-list-container::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+  margin: 2px;
+}
+
+.email-list-container::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  min-height: 20px;
+}
+
+.email-list-container::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.email-list-container::-webkit-scrollbar-corner {
+  background: #f3f4f6;
+}
+
+/* Firefox */
+.email-list-container {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Force scrollbar visibility on desktop */
+.scrollbar-visible::-webkit-scrollbar {
+  width: 8px !important;
+  background: #f3f4f6 !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: #d1d5db !important;
+}
+
+.dark .email-list-container::-webkit-scrollbar-track {
+  background: #111b21;
+}
+
+.dark .email-list-container::-webkit-scrollbar-thumb {
+  background: #2a3942;
+}
+
+.dark .email-list-container::-webkit-scrollbar-thumb:hover {
+  background: #374955;
+}
+
+.dark .email-list-container {
+  scrollbar-color: #2a3942 #111b21;
+}
+
+.dark .email-item:hover {
+  background-color: #2a3942;
+}
+
+/* Mobile - hide scrollbars */
+@media (max-width: 767px) {
+  .email-list-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .email-list-container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Tablet - thinner scrollbars */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .email-list-container::-webkit-scrollbar {
+    width: 6px;
+  }
+}
+
+/* Desktop - full scrollbar always visible */
+@media (min-width: 1024px) {
+  .email-list-container::-webkit-scrollbar {
+    width: 8px !important;
+    background: #f3f4f6 !important;
+  }
+
+  .email-list-container::-webkit-scrollbar-thumb {
+    background: #d1d5db !important;
+  }
+
+  .email-list-container::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af !important;
+  }
+
+  /* Force scrollbar to always be visible */
+  .email-list-container {
+    overflow-y: scroll !important;
+  }
+}
+
+/* Smooth scrolling for all browsers */
+.email-list-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Email item hover effects */
+.email-item {
+  transition: all 0.2s ease;
+}
+
+.email-item:hover {
+  transform: translateX(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.email-item:active {
+  transform: translateX(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Touch feedback for mobile */
+@media (max-width: 767px) {
+  .email-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .email-item:active {
+    background-color: #f3f4f6;
+    transform: scale(0.98);
+  }
+}
+
+/* Scroll snap for better UX */
+.email-list-container {
+  scroll-snap-type: y proximity;
+}
+
+.email-item {
+  scroll-snap-align: start;
+}
+
+/* Loading states */
+.loading-indicator {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Scroll position indicator */
+.scroll-indicator {
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  20%, 80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .email-list-container::-webkit-scrollbar-thumb {
+    background: #000000;
+  }
+  
+  .email-list-container::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .email-list-container {
+    scroll-behavior: auto;
+  }
+  
+  .email-item {
+    transition: none;
+  }
+  
+  .loading-indicator {
+    animation: none;
+  }
+  
+  .scroll-indicator {
+    animation: none;
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "rightsConfirmation": "The app owner confirmed rights to the existing icon artwork on October 1, 2026.",
+  "sources": [
+    {
+      "name": "Message Trigger",
+      "url": "https://cdn-icons-png.flaticon.com/128/5324/5324247.png",
+      "filename": "message-trigger.png"
+    },
+    {
+      "name": "Webhook Trigger",
+      "url": "https://cdn-icons-png.flaticon.com/128/919/919829.png",
+      "filename": "webhook-trigger.png"
+    },
+    {
+      "name": "AI Assistant",
+      "url": "https://cdn-icons-png.flaticon.com/512/14958/14958196.png",
+      "filename": "ai-assistant.png"
+    },
+    {
+      "name": "MCP Client Tool",
+      "url": "https://cdn-icons-png.flaticon.com/128/2885/2885417.png",
+      "filename": "mcp-client-tool.png"
+    },
+    {
+      "name": "MCP Execute Tool",
+      "url": "https://cdn-icons-png.flaticon.com/128/4144/4144787.png",
+      "filename": "mcp-execute-tool.png"
+    },
+    {
+      "name": "Text Message",
+      "url": "https://cdn-icons-png.flaticon.com/128/811/811476.png",
+      "filename": "text-message.png"
+    },
+    {
+      "name": "Quick Reply Options",
+      "url": "https://cdn-icons-png.flaticon.com/128/14669/14669047.png",
+      "filename": "quick-reply-options.png"
+    },
+    {
+      "name": "WhatsApp Poll",
+      "url": "https://cdn-icons-png.flaticon.com/128/12482/12482449.png",
+      "filename": "whatsapp-poll.png"
+    },
+    {
+      "name": "WhatsApp Buttons",
+      "url": "https://cdn-icons-png.flaticon.com/128/1516/1516938.png",
+      "filename": "whatsapp-buttons.png"
+    },
+    {
+      "name": "WhatsApp List",
+      "url": "https://cdn-icons-png.flaticon.com/128/8428/8428362.png",
+      "filename": "whatsapp-list.png"
+    },
+    {
+      "name": "WhatsApp CTA URL",
+      "url": "https://cdn-icons-png.flaticon.com/128/3305/3305847.png",
+      "filename": "whatsapp-cta-url.png"
+    },
+    {
+      "name": "WA Location Request",
+      "url": "https://cdn-icons-png.flaticon.com/128/535/535137.png",
+      "filename": "wa-location-request.png"
+    },
+    {
+      "name": "WhatsApp Flows",
+      "url": "https://cdn-icons-png.flaticon.com/128/1587/1587495.png",
+      "filename": "whatsapp-flows.png"
+    },
+    {
+      "name": "Image Message",
+      "url": "https://cdn-icons-png.flaticon.com/128/17320/17320313.png",
+      "filename": "image-message.png"
+    },
+    {
+      "name": "Video Message",
+      "url": "https://cdn-icons-png.flaticon.com/128/2839/2839026.png",
+      "filename": "video-message.png"
+    },
+    {
+      "name": "Audio Message",
+      "url": "https://cdn-icons-png.flaticon.com/128/5320/5320910.png",
+      "filename": "audio-message.png"
+    },
+    {
+      "name": "Document Message",
+      "url": "https://cdn-icons-png.flaticon.com/128/136/136522.png",
+      "filename": "document-message.png"
+    },
+    {
+      "name": "Condition",
+      "url": "https://cdn-icons-png.flaticon.com/128/17359/17359067.png",
+      "filename": "condition.png"
+    },
+    {
+      "name": "Wait",
+      "url": "https://cdn-icons-png.flaticon.com/128/717/717815.png",
+      "filename": "wait.png"
+    },
+    {
+      "name": "Follow-up Message",
+      "url": "https://cdn-icons-png.flaticon.com/128/3094/3094972.png",
+      "filename": "follow-up-message.png"
+    },
+    {
+      "name": "Translation",
+      "url": "https://cdn-icons-png.flaticon.com/128/8361/8361117.png",
+      "filename": "translation.png"
+    },
+    {
+      "name": "Pipeline",
+      "url": "https://cdn-icons-png.flaticon.com/128/10215/10215964.png",
+      "filename": "pipeline.png"
+    },
+    {
+      "name": "Manage Contact",
+      "url": "https://cdn-icons-png.flaticon.com/128/9722/9722917.png",
+      "filename": "manage-contact.png"
+    },
+    {
+      "name": "Agent Handoff",
+      "url": "https://cdn-icons-png.flaticon.com/128/8898/8898827.png",
+      "filename": "agent-handoff.png"
+    },
+    {
+      "name": "End Conversation",
+      "url": "https://cdn-icons-png.flaticon.com/128/1828/1828843.png",
+      "filename": "end-conversation.png"
+    },
+    {
+      "name": "n8n",
+      "url": "https://registry.npmmirror.com/@lobehub/icons-static-png/1.75.0/files/dark/n8n-color.png",
+      "filename": "n8n.png"
+    },
+    {
+      "name": "Make.com",
+      "url": "https://registry.npmmirror.com/@lobehub/icons-static-png/1.75.0/files/dark/make-color.png",
+      "filename": "make-com.png"
+    },
+    {
+      "name": "HTTP Request",
+      "url": "https://cdn-icons-png.flaticon.com/128/1674/1674969.png",
+      "filename": "http-request.png"
+    },
+    {
+      "name": "Database",
+      "url": "https://cdn-icons-png.flaticon.com/128/5968/5968342.png",
+      "filename": "database.png"
+    },
+    {
+      "name": "Google Sheets",
+      "url": "https://cdn.activepieces.com/pieces/google-sheets.png",
+      "filename": "google-sheets.png"
+    },
+    {
+      "name": "Data Capture",
+      "url": "https://cdn-icons-png.flaticon.com/128/2920/2920349.png",
+      "filename": "data-capture.png"
+    },
+    {
+      "name": "Stripe",
+      "url": "https://cdn.activepieces.com/pieces/stripe.png",
+      "filename": "stripe.png"
+    },
+    {
+      "name": "WooCommerce",
+      "url": "https://www.svgrepo.com/show/303340/woocommerce-logo.svg",
+      "filename": "woocommerce.svg"
+    },
+    {
+      "name": "Call Agent",
+      "url": "https://cdn-icons-png.flaticon.com/128/8898/8898892.png",
+      "filename": "call-agent.png"
+    },
+    {
+      "name": "Contact Notification",
+      "url": "https://cdn-icons-png.flaticon.com/128/4325/4325930.png",
+      "filename": "contact-notification.png"
+    },
+    {
+      "name": "Trigger Flow",
+      "url": "https://cdn-icons-png.flaticon.com/128/1828/1828817.png",
+      "filename": "trigger-flow.png"
+    },
+    {
+      "name": "WebChat",
+      "url": "https://cdn-icons-png.flaticon.com/128/16921/16921613.png",
+      "filename": "webchat.png"
+    },
+    {
+      "name": "Inbox Bot",
+      "url": "https://cdn-icons-png.flaticon.com/128/10881/10881863.png",
+      "filename": "inbox-bot.png"
+    },
+    {
+      "name": "Captured Data",
+      "url": "https://cdn-icons-png.flaticon.com/128/9746/9746243.png",
+      "filename": "captured-data.png"
+    },
+    {
+      "name": "Company Registration",
+      "url": "https://cdn-icons-png.flaticon.com/128/8155/8155652.png",
+      "filename": "company-registration.png"
+    },
+    {
+      "name": "Sales Assistant",
+      "url": "https://cdn-icons-png.flaticon.com/128/4712/4712106.png",
+      "filename": "sales-assistant.png"
+    },
+    {
+      "name": "Manage Task",
+      "url": "https://cdn-icons-png.flaticon.com/128/1632/1632670.png",
+      "filename": "manage-task.png"
+    },
+    {
+      "name": "ERP",
+      "url": "https://cdn-icons-png.flaticon.com/128/7959/7959831.png",
+      "filename": "erp.png"
+    },
+    {
+      "name": "Document Generator",
+      "url": "https://cdn-icons-png.flaticon.com/128/3135/3135715.png",
+      "filename": "document-generator.png"
+    },
+    {
+      "name": "Execution Running",
+      "url": "https://cdn-icons-png.flaticon.com/128/1709/1709973.png",
+      "filename": "execution-running.png"
+    },
+    {
+      "name": "Execution Success",
+      "url": "https://cdn-icons-png.flaticon.com/128/9720/9720724.png",
+      "filename": "execution-success.png"
+    },
+    {
+      "name": "Google Sheets Alternate",
+      "url": "https://cdn-icons-png.flaticon.com/128/281/281761.png",
+      "filename": "google-sheets-alternate.png"
+    },
+    {
+      "name": "Code Execution",
+      "url": "https://cdn-icons-png.flaticon.com/128/4205/4205106.png",
+      "filename": "code-execution.png"
+    }
+  ]
+}

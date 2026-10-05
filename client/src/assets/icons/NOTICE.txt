@@ -1,0 +1,7 @@
+These assets preserve the artwork already used by the application.
+The app owner confirmed rights to the artwork on October 1, 2026.
+See sources.json for original download URLs. Preserve applicable owner licenses and attribution records with distributions.
+Brand logos remain trademarks of their respective owners.
+Remix Icon 4.6.0: Copyright RemixIcon.com, Apache License 2.0 (LICENSE-remixicon.txt).
+LobeHub n8n and Make artwork: Copyright (c) 2023 LobeHub, MIT (LICENSE-lobehub.txt).
+Font Awesome 4.7.0: Copyright Dave Gandy 2016; font SIL OFL 1.1, CSS MIT. See font-awesome/.

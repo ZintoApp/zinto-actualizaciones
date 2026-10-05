@@ -1,0 +1,21 @@
+import { useState } from 'react';
+import { Link,useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from '@/hooks/use-translation';
+import { apiRequest } from '@/lib/queryClient';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import type { RealEstateProject } from '@shared/real-estate-projects';
+import { RealEstateShell } from './real-estate-shell';
+import { useRealEstateAccess } from './use-real-estate-access';
+
+export default function Projects(){
+  const {t}=useTranslation(),access=useRealEstateAccess('projects');
+  const [,navigate]=useLocation(),[search,setSearch]=useState(''),[offset,setOffset]=useState(0);
+  const query=useQuery<{data:RealEstateProject[];total:number}>({enabled:access.enabled,queryKey:['real-estate',access.companyId,'projects',search,offset],queryFn:async()=>(await apiRequest('GET',`/api/erp/real-estate/projects?${new URLSearchParams({search,limit:'12',offset:String(offset)})}`)).json()});
+  return <RealEstateShell title={t('erp.realEstate.projects.title','Projects')} description={t('erp.realEstate.projects.description','Manage developments, buildings, and unit availability.')} icon="ri-building-line" actions={access.canManage&&<Button onClick={()=>navigate('/erp/real-estate/projects/new')}>{t('erp.realEstate.projects.add','Add project')}</Button>}>
+    <div className="re-panel mb-4 p-3"><Input className="max-w-md" aria-label={t('common.search','Search')} placeholder={t('erp.realEstate.projects.search','Search project names and codes…')} value={search} onChange={event=>{setSearch(event.target.value);setOffset(0);}}/></div>
+    {query.isError?<div className="re-panel p-8" role="alert">{t('erp.realEstate.loadError','Unable to load this information.')}<Button variant="outline" onClick={()=>query.refetch()}>{t('common.retry','Retry')}</Button></div>:query.isLoading?<div role="status" className="re-panel h-64 animate-pulse"/>:!query.data?.data.length?<div className="re-panel px-8 py-16 text-center"><i className="ri-building-line text-4xl text-primary" aria-hidden="true"/><h2 className="mt-4 font-semibold">{t('erp.realEstate.projects.empty','Build your project portfolio')}</h2><p className="mt-2 text-sm text-muted-foreground">{t('erp.realEstate.projects.emptyDescription','Create a project, add towers and floors, then organize its units visually.')}</p></div>:<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{query.data.data.map(project=><Link key={project.id} href={`/erp/real-estate/projects/${project.id}`} className="re-panel re-property-card"><div className="re-property-image flex h-40 items-center justify-center">{project.images[0]?<img className="h-full w-full object-cover" src={project.images[0].url} alt={project.images[0].alt??project.name}/>:<i className="ri-building-2-line text-5xl text-muted-foreground/40" aria-hidden="true"/>}</div><div className="p-5"><div className="flex justify-between gap-3"><h2 className="truncate font-semibold">{project.name}</h2><span className={`re-status re-status-${project.status}`}>{t(`erp.realEstate.projectStatus.${project.status}`,project.status)}</span></div><p className="mt-1 text-xs text-muted-foreground">{project.code} · {project.location??'—'}</p><div className="mt-5 grid grid-cols-3 gap-3 border-t border-border pt-4">{[['totalUnits',project.total_units],['availableUnits',project.available_units],['soldUnits',project.sold_units]].map(([label,value])=><div key={label}><strong className="text-lg">{value}</strong><p className="text-xs text-muted-foreground">{t(`erp.realEstate.${label}`,label==='totalUnits'?'Total units':label==='availableUnits'?'Available':'Sold')}</p></div>)}</div></div></Link>)}</div>}
+    {!!query.data?.total&&<div className="mt-4 flex items-center justify-between text-xs text-muted-foreground"><span>{offset+1}–{Math.min(offset+12,query.data.total)} / {query.data.total}</span><div className="flex gap-2"><Button size="sm" variant="outline" disabled={!offset} onClick={()=>setOffset(offset-12)}>{t('common.previous','Previous')}</Button><Button size="sm" variant="outline" disabled={offset+12>=query.data.total} onClick={()=>setOffset(offset+12)}>{t('common.next','Next')}</Button></div></div>}
+  </RealEstateShell>;
+}

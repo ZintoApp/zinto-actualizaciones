@@ -1,0 +1,285 @@
+/* WhatsApp-like conversation background */
+.conversation-background {
+  background-color: hsl(var(--muted));
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+}
+
+.dark .conversation-background {
+  background-color: hsl(var(--background));
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.1) 35px, rgba(0,0,0,.1) 70px);
+}
+
+/* Group chat participant name styling */
+.participant-name {
+  color: #00897b !important; /* WhatsApp teal for participant names */
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  margin-bottom: 2px !important;
+}
+
+/* Conversation start indicator */
+.conversation-start-indicator {
+  background-color: #ffeaa7 !important;
+  color: #2d3436 !important;
+  border: 1px solid #fdcb6e !important;
+}
+
+/* Message grouping improvements */
+.message-group {
+  margin-bottom: 0.5rem;
+}
+
+.message-group .message-bubble:not(:last-child) {
+  margin-bottom: 0.125rem;
+}
+
+.message-group .message-bubble:last-child {
+  margin-bottom: 0;
+}
+
+/* Improved date separator styling */
+.date-separator {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.date-separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent);
+  z-index: 0;
+}
+
+.date-separator span {
+  position: relative;
+  background: var(--background);
+  color: var(--muted-foreground);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+/* Message bubble improvements - WhatsApp Style */
+/* Note: Background and text colors are now handled by Tailwind classes in MessageBubble.tsx */
+.chat-bubble-user {
+  position: relative;
+  word-wrap: break-word;
+  max-width: 100%;
+  border-radius: 8px !important;
+}
+
+.chat-bubble-user::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -6px;
+  width: 0;
+  height: 0;
+  border-left-color: var(--card);
+  border-right: 0;
+  border-bottom: 0;
+  margin-top: -3px;
+  margin-right: -6px;
+}
+
+.dark .chat-bubble-user::after {
+  border-left-color: #005c4b; 
+}
+
+.chat-bubble-contact {
+  position: relative;
+  word-wrap: break-word;
+  max-width: 100%;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.chat-bubble-contact::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -6px;
+  width: 0;
+  height: 0;
+  border-right-color: var(--card);
+  border-left: 0;
+  border-bottom: 0;
+  margin-top: -3px;
+  margin-left: -6px;
+}
+
+.dark .chat-bubble-contact::after {
+  border-right-color: #242626;
+}
+
+/* WhatsApp message time styling - use theme variables */
+.message-time {
+  font-size: 11px !important;
+  opacity: 0.8;
+  font-weight: 400 !important;
+  white-space: nowrap;
+  color: var(--muted-foreground) !important;
+}
+
+/* Status icons for sent messages - use theme variables */
+.message-status {
+  font-size: 12px !important;
+  opacity: 0.8;
+  color: var(--muted-foreground) !important;
+}
+
+/* Message status indicators */
+.message-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+  opacity: 0.7;
+}
+
+.message-status.read {
+  color: #00a884;
+}
+
+.message-status.delivered {
+  color: #6b7280;
+}
+
+.message-status.sent {
+  color: #6b7280;
+}
+
+.message-status.failed {
+  color: #ef4444;
+}
+
+/* Hover effects for message actions */
+.message-actions {
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.message-bubble:hover .message-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Smooth scrolling improvements — iOS Safari / iPhone Pro Max need a
+   constrained flex child (min-height: 0) plus touch momentum scrolling. */
+.messages-container {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.2) transparent;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,0.3);
+}
+
+/* iOS does not paint classic scrollbars; keep a faint indicator while scrolling */
+@supports (-webkit-touch-callout: none) {
+  .messages-container {
+    /* Force a scrollport even when content is short during layout thrash */
+    overflow-y: auto !important;
+  }
+}
+
+.dark .messages-container {
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
+}
+
+.dark .messages-container::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+.dark .messages-container::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+}
+
+.dark .messages-container::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--border) / 0.8);
+}
+
+.dark .participant-name {
+  color: #00a884 !important;
+}
+
+.dark .conversation-start-indicator {
+  background-color: rgba(0, 168, 132, 0.15) !important;
+  color: #e9edef !important;
+  border: 1px solid #00a884 !important;
+}
+
+/* Ensure message content doesn't overlap with timestamp */
+.message-content {
+  margin-bottom: 0.25rem;
+  padding-right: 1rem; /* Space for timestamp */
+}
+
+/* For messages with media or long content */
+.message-content:last-child {
+  margin-bottom: 0;
+}
+
+/* Better spacing for the timestamp row */
+.timestamp-row {
+  min-height: 16px;
+  align-items: flex-end;
+}
+
+/* Conversation message search bar */
+.conversation-search-bar {
+  animation: conversation-search-bar-in 0.2s ease-out;
+}
+
+@keyframes conversation-search-bar-in {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 60px;
+  }
+}
+
+/* Highlighted message (search result) */
+.messages-container .highlighted-message {
+  background-color: hsl(var(--primary) / 0.15);
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.dark .messages-container .highlighted-message {
+  background-color: rgba(0, 168, 132, 0.2);
+}
+

@@ -1,0 +1,6 @@
+import {z} from 'zod';
+export const realEstateExpenseTransitionSchema=z.object({version:z.number().int().positive(),status:z.enum(['approved','draft','cancelled'])}).strict();
+export function assertExpenseTransition(current:string,next:string,hasInvoice:boolean){
+ if(hasInvoice||!({draft:['approved','cancelled'],approved:['draft','cancelled']} as Record<string,string[]>)[current]?.includes(next))throw new Error('Invalid expense transition; posted accounting must be reversed through ERP credit notes');
+}
+export const realEstateExpenseSchema=z.object({title:z.string().trim().min(1).max(250),assetId:z.number().int().positive(),supplierId:z.number().int().positive(),expenseDate:z.string().date(),currency:z.string().regex(/^[A-Z]{3}$/),ownerChargeable:z.boolean().default(false),expenseAccountId:z.number().int().positive(),lines:z.array(z.object({productId:z.number().int().positive(),description:z.string().trim().min(1).max(2000),quantity:z.string().regex(/^\d{1,6}(\.\d{1,4})?$/).refine(v=>Number(v)>0),unitPrice:z.string().regex(/^\d{1,10}(\.\d{1,6})?$/),taxGroupId:z.number().int().positive().nullable().optional()})).min(1).max(100),customFields:z.record(z.unknown()).default({})}).strict();

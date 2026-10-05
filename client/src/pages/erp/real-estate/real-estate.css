@@ -1,0 +1,31 @@
+.re-content {
+  --re-panel: var(--card);
+  --re-border: var(--border);
+  --re-success: 161 78% 43%;
+  --re-warning: 40 95% 55%;
+  --re-info: 213 90% 57%;
+  --re-danger: 0 80% 62%;
+  --re-violet: 260 86% 65%;
+  background: hsl(var(--background));
+}
+.re-panel { border: 1px solid hsl(var(--re-border)); background: hsl(var(--re-panel)); border-radius: 12px; overflow: hidden; }
+.re-property-card { transition: border-color .15s,transform .15s; }
+.re-property-card:hover { border-color: hsl(var(--primary)); transform: translateY(-2px); }
+.re-status { display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 500; background: hsl(var(--muted)); }
+.re-status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.re-status-available,.re-status-rented { color: hsl(var(--re-success)); background: hsl(var(--re-success)/.12); }
+.re-status-reserved { color: hsl(var(--re-warning)); background: hsl(var(--re-warning)/.12); }
+.re-status-sold,.re-status-occupied { color: hsl(var(--re-info)); background: hsl(var(--re-info)/.12); }
+.re-property-image { background: linear-gradient(135deg,hsl(var(--muted)),hsl(var(--secondary))); }
+.re-form-section { padding: 20px; border: 1px solid hsl(var(--re-border)); border-radius: 12px; background: hsl(var(--re-panel)); }
+.re-form-section h2 { margin-bottom: 14px; font-size: 14px; font-weight: 600; }
+.re-metric { padding: 16px; }
+.re-metric strong { display: block; margin-top: 6px; font-size: 24px; letter-spacing: -.025em; }
+.re-dashboard-panel { padding: 16px; }
+.re-metric-icon { display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;border-radius:10px;color:white;box-shadow:inset 0 1px 0 #ffffff30; }
+.re-metric-indigo { background:linear-gradient(135deg,#6564fc,#343bd9); }
+.re-metric-emerald { background:linear-gradient(135deg,#31d499,#08a674); }
+.re-metric-amber { background:linear-gradient(135deg,#f5c045,#cf8d19); }
+.re-metric-red { background:linear-gradient(135deg,#ff7173,#d63646); }
+.re-metric-blue { background:linear-gradient(135deg,#369ff5,#136ac9); }
+.re-metric-violet { background:linear-gradient(135deg,#a776f8,#673bd5); }

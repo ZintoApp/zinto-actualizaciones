@@ -1,0 +1,530 @@
+import crypto from 'crypto';
+import { storage } from '../../storage';
+import { getCachedCompanySetting, getCachedTargetPipelineStage } from '../../utils/pipeline-cache';
+import { InsertConversation, InsertMessage, InsertContact } from '@shared/schema';
+import { broadcastToCompany, broadcastToWebChatSession } from '../../utils/websocket';
+import { smartWebSocketBroadcaster } from '../../utils/smart-websocket-broadcaster';
+import { logger } from '../../utils/logger';
+import { normalizePhoneForInternal } from '@shared/utils/phone';
+import { withContactInitialMessageMetadata } from './contact-initial-message-metadata';
+
+export interface WebChatConnectionData {
+  widgetToken?: string;
+  widgetColor?: string;
+  welcomeMessage?: string;
+  position?: 'bottom-right' | 'bottom-left' | 'bottom-center';
+  theme?: 'auto' | 'light' | 'dark';
+  showAvatar?: boolean;
+  companyName?: string;
+  allowFileUpload?: boolean;
+  collectEmail?: boolean;
+  collectName?: boolean;
+  /** ISO language code for built-in widget UI strings (e.g. en, es). Defaults to en. */
+  widgetLanguage?: string;
+}
+
+interface SessionInfo {
+  connectionId: number;
+  companyId: number;
+  contactId?: number;
+  visitorName?: string;
+  visitorEmail?: string;
+  visitorPhone?: string;
+  createdAt: Date;
+  lastActiveAt: Date;
+  /** Set when contact was created before the first inbound message event. */
+  pendingContactInitialMessage?: boolean;
+}
+
+const sessions = new Map<string, SessionInfo>();
+
+async function generateWidgetToken(connectionId: number): Promise<string> {
+  const token = 'wc_' + crypto.randomBytes(24).toString('hex');
+  const connection = await storage.getChannelConnection(connectionId);
+  const data = (connection?.connectionData || {}) as WebChatConnectionData;
+  await storage.updateChannelConnection(connectionId, {
+    connectionData: {
+      ...data,
+      widgetToken: token,
+    },
+    status: 'active'
+  });
+  return token;
+}
+
+async function verifyWidgetToken(token: string): Promise<any | null> {
+  const connections = await storage.getChannelConnectionsByType('webchat');
+  for (const conn of connections) {
+    const data = (conn.connectionData || {}) as WebChatConnectionData;
+    if (data.widgetToken === token) return conn;
+  }
+  return null;
+}
+
+async function connect(connectionId: number, userId: number): Promise<void> {
+  const conn = await storage.getChannelConnection(connectionId);
+  if (!conn) throw new Error(`Connection ${connectionId} not found`);
+  const data = (conn.connectionData || {}) as WebChatConnectionData;
+  if (!data.widgetToken) {
+    await generateWidgetToken(connectionId);
+  } else {
+    await storage.updateChannelConnectionStatus(connectionId, 'active');
+  }
+  logger.info('webchat', `WebChat connection ${connectionId} activated by user ${userId}`);
+}
+
+async function disconnect(connectionId: number, userId: number): Promise<boolean> {
+  try {
+    const conn = await storage.getChannelConnection(connectionId);
+    if (!conn) return false;
+
+    const data = (conn.connectionData || {}) as WebChatConnectionData;
+    await storage.updateChannelConnection(connectionId, {
+      status: 'disconnected',
+      connectionData: {
+        ...data,
+        widgetToken: undefined
+      }
+    });
+
+    for (const [sid, info] of sessions.entries()) {
+      if (info.connectionId === connectionId) sessions.delete(sid);
+    }
+    logger.info('webchat', `WebChat connection ${connectionId} disconnected by user ${userId}`);
+    return true;
+  } catch (e) {
+    logger.error('webchat', 'Error disconnecting WebChat connection:', e);
+    return false;
+  }
+}
+
+async function registerSession(
+  connectionId: number,
+  companyId: number,
+  sessionId: string,
+  visitorName?: string,
+  visitorEmail?: string,
+  visitorPhone?: string,
+  options?: { markPendingContactInitialMessage?: boolean },
+) {
+  sessions.set(sessionId, {
+    connectionId,
+    companyId,
+    visitorName,
+    visitorEmail,
+    visitorPhone,
+    createdAt: new Date(),
+    lastActiveAt: new Date()
+  });
+
+  try {
+    const { contactWasCreated } = await ensureContactAndConversation(connectionId, companyId, sessionId, visitorName, visitorEmail, visitorPhone);
+    if (contactWasCreated && options?.markPendingContactInitialMessage) {
+      const info = sessions.get(sessionId);
+      if (info) {
+        info.pendingContactInitialMessage = true;
+      }
+    }
+  } catch (e) {
+    logger.warn('webchat', 'Failed to pre-create contact from session registration', e as any);
+  }
+}
+
+async function ensureContactAndConversation(connectionId: number, companyId: number, sessionId: string, visitorName?: string, visitorEmail?: string, visitorPhone?: string) {
+
+  const normalizedPhone = visitorPhone ? normalizePhoneForInternal(visitorPhone) : '';
+  let contact = null as any;
+
+  const mappedContactId = await storage.getWebchatSessionContactId?.(sessionId);
+  if (mappedContactId) {
+    contact = await storage.getContact(mappedContactId);
+  }
+
+  let contactWasCreated = false;
+
+  if (!contact && normalizedPhone) {
+    contact = await storage.getContactByPhone(normalizedPhone, companyId);
+    if (contact) {
+      const updateData: Partial<InsertContact> = {};
+      if (visitorName && (!contact.name || contact.name === contact.phone || contact.name === 'Website Visitor')) {
+        updateData.name = visitorName;
+      }
+      if (visitorEmail && !contact.email) {
+        updateData.email = visitorEmail;
+      }
+      if (Object.keys(updateData).length > 0) {
+        contact = await storage.updateContact(contact.id, updateData);
+      }
+    }
+  }
+
+  if (!contact) {
+    contact = await storage.getContactByIdentifier?.(sessionId, 'webchat');
+  }
+
+  if (!contact) {
+    const insertContact: InsertContact = {
+      companyId,
+      name: visitorName || 'Website Visitor',
+      email: visitorEmail || null,
+      phone: (normalizedPhone || visitorPhone || undefined) as any,
+      avatarUrl: undefined as any,
+      identifier: sessionId,
+      identifierType: 'webchat',
+      source: 'webchat',
+      notes: undefined as any,
+      isHistorySync: false,
+      historySyncBatchId: undefined as any
+    };
+    const contactResult = await storage.getOrCreateContactResult(insertContact);
+    contact = contactResult.contact;
+    contactWasCreated = contactResult.created;
+
+    // Auto-add contact to pipeline if enabled (only for newly created contacts)
+    if (contactWasCreated) try {
+      const autoAddEnabled = await getCachedCompanySetting(companyId, 'autoAddContactToPipeline');
+      if (autoAddEnabled) {
+        // Get initial stage first to resolve pipelineId for duplicate check
+        const initialStage = await getCachedTargetPipelineStage(companyId);
+        if (initialStage) {
+          // Check if contact already has an active deal in this pipeline to avoid duplicates
+          const existingDeal = await storage.getActiveDealByContact(contact.id, companyId, initialStage.pipelineId);
+          if (!existingDeal) {
+            const connection = await storage.getChannelConnection(connectionId);
+            const deal = await storage.createDeal({
+              companyId: companyId,
+              contactId: contact.id,
+              title: `New Lead - ${contact.name}`,
+              pipelineId: initialStage.pipelineId,
+              stageId: initialStage.id,
+              stage: 'lead'
+            });
+            await storage.createDealActivity({
+              dealId: deal.id,
+              userId: connection?.userId || 1,
+              type: 'create',
+              content: 'Deal automatically created when contact was added'
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error auto-adding contact to pipeline:', error);
+      // Don't fail contact creation if pipeline addition fails
+    }
+  } else if (contact.identifierType === 'webchat') {
+
+    if (contact.identifierType === 'webchat' && (!contact.identifier || contact.identifier.trim() === '')) {
+      logger.warn('webchat', `Found webchat contact ${contact.id} with missing identifier, updating with sessionId: ${sessionId}`);
+      contact = await storage.updateContact(contact.id, {
+        identifier: sessionId,
+        identifierType: 'webchat'
+      });
+    }
+  }
+
+  await storage.upsertWebchatSession?.({
+    sessionId,
+    connectionId,
+    companyId,
+    contactId: contact.id,
+    visitorName: visitorName || null,
+    visitorEmail: visitorEmail || null,
+    visitorPhone: normalizedPhone || visitorPhone || null
+  });
+
+  const sessionInfo = sessions.get(sessionId);
+  if (sessionInfo) {
+    sessionInfo.contactId = contact.id;
+  }
+
+  let conversation = await storage.getConversationByContactAndChannel(contact.id, connectionId);
+  if (!conversation) {
+    const insertConversation: InsertConversation = {
+      companyId,
+      contactId: contact.id,
+      channelType: 'webchat',
+      channelId: connectionId,
+      status: 'open',
+      assignedToUserId: null as any,
+      lastMessageAt: new Date(),
+      unreadCount: 0,
+      botDisabled: false,
+      disabledAt: null as any,
+      disableDuration: null as any,
+      disableReason: null as any,
+      isGroup: false,
+      groupJid: null as any,
+      groupName: null as any,
+      groupDescription: null as any,
+      groupParticipantCount: 0,
+      groupCreatedAt: null as any,
+      groupMetadata: null as any,
+      isHistorySync: false,
+      historySyncBatchId: null as any,
+      isStarred: false,
+      isArchived: false,
+      starredAt: null as any,
+      archivedAt: null as any
+    };
+    conversation = await storage.createConversation(insertConversation);
+
+    broadcastToCompany({ type: 'newConversation', data: { ...conversation, contact } }, companyId);
+  }
+  return { contact, conversation, contactWasCreated };
+}
+
+async function resolveSessionIdForContact(
+  connectionId: number,
+  contact: { id: number; identifier?: string | null; identifierType?: string | null }
+): Promise<string | undefined> {
+  const session = await storage.getWebchatSessionByContact?.(contact.id, connectionId);
+  if (session?.sessionId) {
+    return session.sessionId;
+  }
+
+  const legacySessionId = contact.identifier?.trim();
+  if (contact.identifierType === 'webchat' && legacySessionId) {
+    return legacySessionId;
+  }
+
+  return undefined;
+}
+
+async function processMessageThroughFlowExecutor(
+  message: any,
+  conversation: any,
+  contact: any,
+  channelConnection: any
+): Promise<void> {
+  try {
+    if (!contact) {
+      logger.debug('webchat', `Skipping flow executor: missing contact`);
+      return;
+    }
+
+    const inboundSessionId =
+      typeof message?.metadata?.sessionId === 'string' && message.metadata.sessionId.trim()
+        ? message.metadata.sessionId.trim()
+        : undefined;
+    const flowContact = inboundSessionId
+      ? { ...contact, identifier: inboundSessionId, identifierType: 'webchat' }
+      : contact;
+
+    logger.debug('webchat', `Processing message through flow executor:`, {
+      contactIdentifier: flowContact.identifier,
+      sessionId: inboundSessionId,
+      messageId: message.id,
+      conversationId: conversation?.id
+    });
+
+    const flowExecutorModule = await import('../flow-executor');
+    const flowExecutor = flowExecutorModule.default;
+
+    if (contact) {
+      await flowExecutor.processIncomingMessage(message, conversation, flowContact, channelConnection);
+    }
+  } catch (error) {
+    logger.error('webchat', `Error in processMessageThroughFlowExecutor:`, error);
+  }
+}
+
+async function processWebhook(payload: any, companyId?: number): Promise<any> {
+  const { token, eventType, data } = payload || {};
+  if (!token) throw new Error('Missing widget token');
+  const connection = await verifyWidgetToken(token);
+  if (!connection) throw new Error('Invalid token');
+  if (companyId && connection.companyId !== companyId) throw new Error('Access denied');
+
+  const sessionId: string = data?.sessionId;
+  if (!sessionId) throw new Error('Missing sessionId');
+
+
+  if (!sessions.has(sessionId)) {
+    await registerSession(connection.id, connection.companyId, sessionId, data?.visitorName, data?.visitorEmail, data?.visitorPhone, {
+      markPendingContactInitialMessage: true,
+    });
+  }
+  const info = sessions.get(sessionId)!;
+
+  if (data?.visitorName && !info.visitorName) info.visitorName = data.visitorName;
+  if (data?.visitorEmail && !info.visitorEmail) info.visitorEmail = data.visitorEmail;
+  if (data?.visitorPhone && !info.visitorPhone) info.visitorPhone = data.visitorPhone;
+  info.lastActiveAt = new Date();
+  await storage.touchWebchatSession?.(sessionId);
+
+  switch (eventType) {
+    case 'message': {
+      const content: string = String(data?.message || '').slice(0, 5000);
+      const visitorName: string | undefined = (data?.visitorName ?? info.visitorName);
+      const visitorEmail: string | undefined = (data?.visitorEmail ?? info.visitorEmail);
+      const visitorPhone: string | undefined = (data?.visitorPhone ?? info.visitorPhone);
+      const mediaUrl: string | undefined = data?.mediaUrl;
+      const { contact, conversation, contactWasCreated } = await ensureContactAndConversation(connection.id, connection.companyId, sessionId, visitorName, visitorEmail, visitorPhone);
+
+      const shouldAttachInitialContactMetadata =
+        info.pendingContactInitialMessage === true || contactWasCreated;
+
+      const baseMetadata = { channelType: 'webchat', sessionId, timestamp: Date.now() };
+      const metadata = withContactInitialMessageMetadata({
+        existingMetadata: baseMetadata,
+        channelType: 'webchat',
+        conversationStatus: conversation.status,
+        isInboundContactMessage: true,
+        contactWasCreatedByInboundWebhook: shouldAttachInitialContactMetadata,
+      });
+
+      if (shouldAttachInitialContactMetadata) {
+        info.pendingContactInitialMessage = false;
+      }
+
+      const insertMessage: InsertMessage = {
+        conversationId: conversation.id,
+        direction: 'inbound',
+        type: data?.messageType || 'text',
+        content,
+        metadata: metadata as any,
+        senderId: undefined as any,
+        senderType: 'contact',
+        status: 'delivered',
+        sentAt: new Date(),
+        readAt: undefined as any,
+        isFromBot: false,
+        mediaUrl: mediaUrl || (undefined as any),
+        externalId: `webchat_${Date.now()}`,
+        groupParticipantJid: undefined as any,
+        groupParticipantName: undefined as any,
+        isHistorySync: false,
+        historySyncBatchId: undefined as any,
+        createdAt: new Date()
+      };
+
+      const saved = await storage.createMessage(insertMessage);
+      await storage.updateConversation(conversation.id, { lastMessageAt: new Date(), status: 'open' });
+
+
+      smartWebSocketBroadcaster.broadcast({
+        type: 'newMessage',
+        data: saved,
+        companyId: connection.companyId,
+        conversationId: conversation.id,
+        priority: 'high',
+        batchable: false
+      });
+
+
+      broadcastToCompany({ type: 'newMessage', data: saved }, connection.companyId);
+
+
+      if (!conversation.botDisabled) {
+        await processMessageThroughFlowExecutor(saved, conversation, contact, connection);
+      }
+
+      return saved;
+    }
+    case 'typing':
+    case 'session_start': {
+      const visitorName: string | undefined = (data?.visitorName ?? info.visitorName);
+      const visitorEmail: string | undefined = (data?.visitorEmail ?? info.visitorEmail);
+      const visitorPhone: string | undefined = (data?.visitorPhone ?? info.visitorPhone);
+      const result = await ensureContactAndConversation(connection.id, connection.companyId, sessionId, visitorName, visitorEmail, visitorPhone);
+      if (result.contactWasCreated) {
+        info.pendingContactInitialMessage = true;
+      }
+      return result;
+    }
+    case 'session_end':
+    case 'file_upload':
+    default:
+
+      return null;
+  }
+}
+
+async function sendMessage(
+  connectionId: number,
+  sessionId: string,
+  content: string,
+  messageType: string = 'text',
+  mediaUrl?: string
+): Promise<any> {
+  const connection = await storage.getChannelConnection(connectionId);
+  if (!connection) throw new Error(`Connection ${connectionId} not found`);
+  const companyId = connection.companyId;
+  if (companyId == null) {
+    throw new Error('Connection has no companyId');
+  }
+
+  if (!sessions.has(sessionId)) {
+    await registerSession(connectionId, companyId, sessionId);
+  }
+
+  const { contact, conversation } = await ensureContactAndConversation(connectionId, companyId, sessionId);
+
+  const insertMessage: InsertMessage = {
+    conversationId: conversation.id,
+    direction: 'outbound',
+    type: messageType || 'text',
+    content,
+    metadata: { channelType: 'webchat', sessionId, timestamp: Date.now() } as any,
+    senderId: undefined as any,
+    senderType: 'user',
+    status: 'sent',
+    sentAt: new Date(),
+    readAt: undefined as any,
+    isFromBot: false,
+    mediaUrl: mediaUrl || (undefined as any),
+    externalId: `webchat_${Date.now()}`,
+    groupParticipantJid: undefined as any,
+    groupParticipantName: undefined as any,
+    isHistorySync: false,
+    historySyncBatchId: undefined as any,
+    createdAt: new Date()
+  };
+
+  const saved = await storage.createMessage(insertMessage);
+  await storage.updateConversation(conversation.id, { lastMessageAt: new Date() });
+
+
+  broadcastToWebChatSession({ type: 'webchatMessage', data: saved }, sessionId);
+
+  smartWebSocketBroadcaster.broadcast({
+    type: 'newMessage',
+    data: saved,
+    companyId,
+    conversationId: conversation.id,
+    priority: 'high',
+    batchable: false
+  });
+
+  broadcastToCompany({ type: 'newMessage', data: saved }, companyId);
+
+  return saved;
+}
+
+async function initializeAllConnections(): Promise<void> {
+  try {
+    const connections = await storage.getChannelConnectionsByType('webchat');
+    for (const c of connections) {
+      const data = (c.connectionData || {}) as WebChatConnectionData;
+      if (!data.widgetToken) {
+        await generateWidgetToken(c.id);
+      }
+    }
+    logger.info('webchat', `Initialized ${connections.length} WebChat connections`);
+  } catch (e) {
+    logger.error('webchat', 'Error initializing WebChat connections:', e);
+  }
+}
+
+export default {
+  connect,
+  disconnect,
+  processWebhook,
+  sendMessage,
+  resolveSessionIdForContact,
+  generateWidgetToken,
+  verifyWidgetToken,
+  initializeAllConnections,
+  registerSession,
+};

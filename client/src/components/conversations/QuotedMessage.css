@@ -1,0 +1,222 @@
+.quoted-message-preview {
+  display: flex;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: default;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.quoted-message-preview.clickable {
+  cursor: pointer;
+}
+
+.quoted-message-preview.clickable:hover {
+  opacity: 0.8;
+}
+
+.quoted-message-preview.inbound {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #10b981;
+}
+
+.quoted-message-preview.outbound {
+  background-color: rgba(0, 0, 0, 0.14);
+  border-left: 4px solid rgba(255, 255, 255, 0.8);
+}
+
+.dark .quoted-message-preview.inbound {
+  background-color: #202c33;
+  border-left-color: #00a884;
+}
+
+.dark .quoted-message-preview.outbound {
+  background-color: rgba(0, 0, 0, 0.18);
+  border-left-color: #00a884;
+}
+
+.quoted-border {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 2px;
+}
+
+.quoted-content {
+  flex: 1;
+  min-width: 0;
+  align-self: center;
+}
+
+.quoted-media-thumbnail {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  margin: -8px -12px -8px 10px;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.quoted-sender {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: #374151;
+  line-height: 1.2;
+}
+
+.quoted-message-preview.inbound .quoted-sender {
+  color: #10b981;
+}
+
+.quoted-message-preview.outbound .quoted-sender {
+  color: #f0f9ff;
+}
+
+.quoted-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+.quoted-message-preview.outbound .quoted-text {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.dark .quoted-sender {
+  color: #e9edef;
+}
+
+.dark .quoted-message-preview.inbound .quoted-sender {
+  color: #00a884;
+}
+
+.dark .quoted-message-preview.outbound .quoted-sender {
+  color: #7de4c6;
+}
+
+.dark .quoted-text {
+  color: #8696a0;
+}
+
+.quoted-message-preview.loading {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-left: 4px solid #e5e7eb;
+}
+
+.loading-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.quoted-message-preview.error {
+  background-color: rgba(239, 68, 68, 0.05);
+  border-left: 4px solid #ef4444;
+}
+
+.quoted-message-preview.error .quoted-sender,
+.quoted-message-preview.error .quoted-text {
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .quoted-message-preview {
+    padding: 6px 10px;
+    margin-bottom: 6px;
+  }
+  
+  .quoted-sender {
+    font-size: 0.7rem;
+  }
+  
+  .quoted-text {
+    font-size: 0.8rem;
+  }
+
+  .quoted-media-thumbnail {
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+    margin: -6px -10px -6px 8px;
+  }
+}
+
+.chat-bubble-contact .quoted-message-preview,
+.chat-bubble-user .quoted-message-preview {
+  margin: -4px -4px 8px -4px;
+  border-radius: 6px;
+}
+
+.chat-bubble-contact .quoted-message-preview {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.chat-bubble-user .quoted-message-preview {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.dark .chat-bubble-user .quoted-message-preview {
+  background-color: rgba(0, 168, 132, 0.15);
+}
+
+.chat-bubble-user .quoted-message-preview .quoted-sender,
+.chat-bubble-user .quoted-message-preview .quoted-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.chat-bubble-user .quoted-message-preview.outbound .quoted-sender {
+  color: rgba(255, 255, 255, 1);
+}
+
+.chat-bubble-user .quoted-message-preview.inbound .quoted-sender {
+  color: #34d399;
+}
+
+.highlighted-message {
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0% {
+    background-color: transparent;
+  }
+  25% {
+    background-color: rgba(59, 130, 246, 0.1);
+    transform: scale(1.02);
+  }
+  50% {
+    background-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.02);
+  }
+  75% {
+    background-color: rgba(59, 130, 246, 0.1);
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,7 @@
+export const AFFILIATE_PUBLIC_SETTINGS_KEY = 'affiliate_public_settings';
+
+export const DEFAULT_AFFILIATE_REGISTRATION_COMMISSION_RATE = 30;
+
+export const DEFAULT_AFFILIATE_PUBLIC_SETTINGS = {
+  registrationCommissionRate: DEFAULT_AFFILIATE_REGISTRATION_COMMISSION_RATE
+} as const;
